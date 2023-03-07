@@ -4,52 +4,37 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <link rel="stylesheet" href="style.css" />
+
     <title>Open Box</title>
   </head>
   <body>
     <main>
       <h1>Shopping List</h1>
     </main>
+    <form class="item-form">
+      <div>
+        <label for="naming">Item:</label>
+        <input
+          type="text"
+          name="naming"
+          class="item-input"
+          placeholder="Enter item"
+        />
+        <button class="btn">+Add item</button>
+      </div>
+    </form>
 
-    <div>
-      <label for="naming">Item:</label>
-      <input
-        type="text"
-        name="naming"
-        class="input_value"
-        placeholder="Enter item"
-      />
-      <h5></h5>
-      <button class="btn">+Add item</button>
-    </div>
-
-    <form class="form_submit">
+    <form class="search-form">
       <input
         type="text"
         placeholder="Search Item"
         name="filtering"
-        class="input_value1"
+        class="filter"
       />
     </form>
-    <div class="world">
-      <li class="filterBox">
-        <h4>Apples</h4>
-        <button class="btn2">X</button>
-      </li>
-      <li class="filterBox">
-        <h4>Banana</h4>
-        <button class="btn2">X</button>
-      </li>
-      <li class="filterBox">
-        <h4>Oranges</h4>
-        <button class="btn2">X</button>
-      </li>
-      <li class="filterBox">
-        <h4>Mango</h4>
-        <button class="btn2">X</button>
-      </li>
-    </div>
+    <div class="item-list"></div>
 
     <div class="clearAll">
       <button class="btn1">Clear All</button>

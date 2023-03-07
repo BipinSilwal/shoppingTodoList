@@ -1,60 +1,129 @@
-const shoppingValue = document.querySelector('.input_value');
-const filterValue = document.querySelector('.input_value1');
-const submitForm = document.querySelector('.form_submit');
+const itemForm = document.querySelector('.item-form');
+const searchForm = document.querySelector('.search-form');
 
-const btn = document.querySelector('.btn');
-const btn1 = document.querySelector('.btn1');
+const itemInput = document.querySelector('.item-input');
+const itemList = document.querySelector('.item-list');
 
-const shoppingItems = document.querySelector('.world');
-const noItems = document.querySelector('h5');
-const listItems = document.querySelectorAll('li');
+const clearAll = document.querySelector('.btn1');
 
-// shoppingValue.addEventListener('change', (e) => {
-//   let x = shoppingValue.value;
-//   console.log(x);
-//   shoppingValue.value = '';
-// });
+//display Items:
 
-btn.addEventListener('click', (e) => {
-  if (shoppingValue.value.length === 0) {
-    noItems.textContent = `pls enter the items`;
-    setTimeout(() => {
-      noItems.textContent = '';
-    }, 1000);
-  } else {
-    let list = document.createElement('li');
-    list.className = 'filterBox';
-    let listValue = document.createElement('h4');
-    listValue.textContent = shoppingValue.value;
-    let btn = document.createElement('button');
-    btn.className = 'btn2';
-    btn.textContent = 'X';
-    list.append(listValue, btn);
-    shoppingItems.appendChild(list);
-    shoppingValue.value = '';
-  }
-});
+function displayItems() {
+  const itemLocalStorage = getItemFromLocalStorage();
+  itemLocalStorage.forEach((item) => addItemToDOM(item));
+}
 
-shoppingItems.addEventListener('click', (e) => {
-  shoppingItems.removeChild(e.target.parentElement);
-});
+// adding item to list..................
 
-submitForm.addEventListener('input', (e) => {
+function addItemToList(e) {
   e.preventDefault();
-  const text = e.target.value.toLowerCase();
-  console.log(text);
-  listItems.forEach((items) => {
-    console.log(items);
-    const itemName = items.firstElementChild.textContent.toLowerCase();
+  const newItem = itemInput.value;
 
-    if (itemName.indexOf(text) != -1) {
-      items.style.display = 'flex';
+  if (newItem === '') {
+    alert('Please add an item!!');
+    return;
+  }
+
+  addItemToDOM(newItem);
+
+  addItemToLocalStorage(newItem);
+
+  itemInput.value = '';
+
+  checkUI();
+}
+
+// adding items to DOM..............
+
+function addItemToDOM(item) {
+  const list = document.createElement('li');
+  list.className = 'filterBox';
+  list.appendChild(document.createTextNode(item));
+  const button = addButton('btn2');
+  list.appendChild(button);
+  // Add to UL
+  itemList.append(list);
+}
+
+// adding items to Local storage.................
+
+function addItemToLocalStorage(item) {
+  const itemLocalStorage = getItemFromLocalStorage();
+
+  itemLocalStorage.push(item);
+  localStorage.setItem('items', JSON.stringify(itemLocalStorage));
+}
+
+// getting items from Local storage................
+
+function getItemFromLocalStorage() {
+  let itemLocalStorage;
+
+  if (localStorage.getItem('items') === null) {
+    itemLocalStorage = [];
+  } else {
+    itemLocalStorage = JSON.parse(localStorage.getItem('items'));
+  }
+  console.log(itemLocalStorage);
+  return itemLocalStorage;
+}
+
+function searchItems(e) {
+  const items = itemList.querySelectorAll('li');
+  const text = e.target.value.toLowerCase();
+  items.forEach((item) => {
+    const itemsName = item.firstChild.textContent.toLowerCase();
+    if (itemsName.indexOf(text) != -1) {
+      item.style.display = 'flex';
     } else {
-      items.style.display = 'none';
+      item.style.display = 'none';
     }
   });
-});
+}
 
-btn1.addEventListener('click', () => {
-  shoppingItems.innerHTML = ``;
-});
+// clearing All Items...............
+
+function clearAllItem() {
+  while (itemList.firstChild) {
+    itemList.removeChild(itemList.firstChild);
+  }
+  checkUI();
+}
+
+function removeItem(e) {
+  itemList.removeChild(e.target.parentElement);
+}
+//creating button..................
+
+function addButton(classes) {
+  const button = document.createElement('button');
+  button.className = classes;
+  button.appendChild(document.createTextNode('X'));
+  return button;
+}
+
+function checkUI() {
+  const items = itemList.querySelectorAll('li');
+
+  if (items.length === 0) {
+    clearAll.style.display = 'none';
+    searchForm.style.display = 'none';
+  } else {
+    clearAll.style.display = 'block';
+    searchForm.style.display = 'block';
+  }
+}
+
+itemForm.addEventListener('submit', addItemToList);
+clearAll.addEventListener('click', clearAllItem);
+itemList.addEventListener('click', removeItem);
+searchForm.addEventListener('input', searchItems);
+document.addEventListener('DOMContentLoaded', displayItems);
+
+// const world = '["ram"]';
+
+// const x = JSON.parse(world);
+
+// console.log(typeof x);
+
+// console.log(Object.keys(x));
