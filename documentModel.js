@@ -64,7 +64,7 @@ function getItemFromLocalStorage() {
   } else {
     itemLocalStorage = JSON.parse(localStorage.getItem('items'));
   }
-  console.log(itemLocalStorage);
+
   return itemLocalStorage;
 }
 
@@ -87,12 +87,33 @@ function clearAllItem() {
   while (itemList.firstChild) {
     itemList.removeChild(itemList.firstChild);
   }
+  localStorage.removeItem('items');
   checkUI();
 }
 
-function removeItem(e) {
-  itemList.removeChild(e.target.parentElement);
+function onClickItem(e) {
+  if (e.target.classList.contains('btn2')) {
+    removeItem(e.target.parentElement);
+  }
 }
+
+function removeItem(item) {
+  if (confirm('Are you sure?')) {
+    item.remove();
+
+    removeItemFromLocalStorage(item.firstChild.data);
+
+    checkUI();
+  }
+}
+
+function removeItemFromLocalStorage(item) {
+  let itemFromStorage = getItemFromLocalStorage();
+  console.log(itemFromStorage);
+  itemFromStorage = itemFromStorage.filter((id) => id !== item);
+  localStorage.setItem('items', JSON.stringify(itemFromStorage));
+}
+
 //creating button..................
 
 function addButton(classes) {
@@ -116,7 +137,7 @@ function checkUI() {
 
 itemForm.addEventListener('submit', addItemToList);
 clearAll.addEventListener('click', clearAllItem);
-itemList.addEventListener('click', removeItem);
+itemList.addEventListener('click', onClickItem);
 searchForm.addEventListener('input', searchItems);
 document.addEventListener('DOMContentLoaded', displayItems);
 
