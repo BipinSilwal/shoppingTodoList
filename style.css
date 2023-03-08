@@ -4,6 +4,10 @@
   border-box: box-sizing;
 }
 
+body {
+  background-color: #e1f5c4;
+}
+
 main,
 h3 {
   text-align: center;
@@ -63,6 +67,11 @@ h3 {
 
 .clearAll {
   margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.main-form {
   display: flex;
   justify-content: center;
 }
