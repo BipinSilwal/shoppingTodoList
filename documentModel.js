@@ -5,12 +5,16 @@ const itemInput = document.querySelector('.item-input');
 const itemList = document.querySelector('.item-list');
 
 const clearAll = document.querySelector('.btn1');
+const btn = document.querySelector('.btn');
+
+let isEditMode = false;
 
 //display Items:
 
 function displayItems() {
   const itemLocalStorage = getItemFromLocalStorage();
   itemLocalStorage.forEach((item) => addItemToDOM(item));
+  checkUI();
 }
 
 // adding item to list..................
@@ -22,6 +26,20 @@ function addItemToList(e) {
   if (newItem === '') {
     alert('Please add an item!!');
     return;
+  }
+
+  if (isEditMode) {
+    const itemToEdit = itemList.querySelector('.editMode');
+    console.log(itemToEdit);
+    removeItemFromLocalStorage(itemToEdit.firstChild.data);
+    itemToEdit.classList.remove('editMode');
+    itemToEdit.remove();
+    isEditMode = false;
+  } else {
+    if (checkItemRepeat(newItem)) {
+      alert('Item already exists in the list!!');
+      return;
+    }
   }
 
   addItemToDOM(newItem);
@@ -68,6 +86,11 @@ function getItemFromLocalStorage() {
   return itemLocalStorage;
 }
 
+function checkItemRepeat(item) {
+  const itemLocalStorage = getItemFromLocalStorage();
+  return itemLocalStorage.includes(item);
+}
+
 function searchItems(e) {
   const items = itemList.querySelectorAll('li');
   const text = e.target.value.toLowerCase();
@@ -94,7 +117,23 @@ function clearAllItem() {
 function onClickItem(e) {
   if (e.target.classList.contains('btn2')) {
     removeItem(e.target.parentElement);
+  } else {
+    console.log(e.target);
+    setItemEdit(e.target);
   }
+}
+
+function setItemEdit(item) {
+  isEditMode = true;
+
+  itemList
+    .querySelectorAll('li')
+    .forEach((item) => item.classList.remove('editMode'));
+
+  item.classList.add('editMode');
+  itemInput.value = item.firstChild.data;
+  btn.style.backgroundColor = '#228B22';
+  btn.textContent = 'update Item';
 }
 
 function removeItem(item) {
@@ -109,7 +148,6 @@ function removeItem(item) {
 
 function removeItemFromLocalStorage(item) {
   let itemFromStorage = getItemFromLocalStorage();
-  console.log(itemFromStorage);
   itemFromStorage = itemFromStorage.filter((id) => id !== item);
   localStorage.setItem('items', JSON.stringify(itemFromStorage));
 }
@@ -124,6 +162,8 @@ function addButton(classes) {
 }
 
 function checkUI() {
+  itemInput.value = '';
+
   const items = itemList.querySelectorAll('li');
 
   if (items.length === 0) {
@@ -133,6 +173,10 @@ function checkUI() {
     clearAll.style.display = 'block';
     searchForm.style.display = 'block';
   }
+  btn.textContent = '+AddItem';
+  btn.style.backgroundColor = '#333';
+
+  isEditMode = false;
 }
 
 itemForm.addEventListener('submit', addItemToList);
@@ -140,11 +184,3 @@ clearAll.addEventListener('click', clearAllItem);
 itemList.addEventListener('click', onClickItem);
 searchForm.addEventListener('input', searchItems);
 document.addEventListener('DOMContentLoaded', displayItems);
-
-// const world = '["ram"]';
-
-// const x = JSON.parse(world);
-
-// console.log(typeof x);
-
-// console.log(Object.keys(x));

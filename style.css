@@ -52,6 +52,10 @@ h3 {
   margin-bottom: 10px;
 }
 
+.editMode {
+  color: #ccc;
+}
+
 .btn2 {
   padding: 5px;
   color: red;
